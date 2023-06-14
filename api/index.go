@@ -15,9 +15,9 @@ type EmployeeData struct {
 	BadgeNumber int    `json:"badgeNumber"`
 }
 
-
 func Handler(w http.ResponseWriter, r *http.Request) {
 
+	// we make sure only POST requests are served
 	if r.Method != http.MethodPost {
 		http.Error(w, "Only POST requests are allowed.", http.StatusMethodNotAllowed)
 		return
@@ -26,6 +26,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/csv")
 	w.Header().Set("Content-Disposition", "attachment; filename=data.csv")
 
+	// parse input JSON
 	var employees []EmployeeData
 	err := json.NewDecoder(r.Body).Decode(&employees)
 	if err != nil {
@@ -33,6 +34,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// create CSV result
 	writer := csv.NewWriter(w)
 	writer.Write([]string{"Name", "Age", "Job Title", "Badge Number"})
 
